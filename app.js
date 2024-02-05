@@ -32,13 +32,13 @@ if (process.env.NODE_ENV === "development") {
 // });
 // app.use("/api", limiter);
 // CORS configuration
-const corsOptions = {
-  origin: "http://localhost:3000",
-  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-};
+// const corsOptions = {
+//   origin: "http://localhost:3000",
+//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+//   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: "10kb" }));
