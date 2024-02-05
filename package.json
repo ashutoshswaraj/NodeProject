@@ -8,7 +8,7 @@
     "start:prod": "NODE_ENV=production server.js",
     "debug": "ndb server.js",
     "dev": "nodemon server.js",
-    "build": "npm i"
+    "build": "npm install"
   },
   "author": "Jonas Schmedtmann",
   "license": "ISC",
