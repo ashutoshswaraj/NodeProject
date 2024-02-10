@@ -24,20 +24,26 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+// Limit requests from same API
 // const limiter = rateLimit({
 //   max: 100000,
 //   // windowMs: 60 * 60 * 1000,
 //   message: "Too many requests from this IP, please try again in an hour!",
 // });
 // app.use("/api", limiter);
+// CORS configuration
+var allowlist = [
+  "http://localhost:3000",
+  "https://effervescent-melba-bd12be.netlify.app",
+  "https://65c7d043cf29b69cebea0f6b--effervescent-melba-bd12be.netlify.app",
+];
+const corsOptions = {
+  origin: allowlist,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // Enable credentials (cookies, authorization headers, etc.)
+};
 
-// const corsOptions = {
-//   origin: "https://65c7bfc479610794844c6da6--dreamy-gecko-941c26.netlify.app/",
-//   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
-// };
-
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: "10kb" }));
