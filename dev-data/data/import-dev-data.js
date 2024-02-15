@@ -11,14 +11,13 @@ const DB = process.env.DATABASE.replace(
   "<PASSWORD>",
   process.env.DATABASE_PASSSWORD
 );
-mongoose
-  .connect(DB, {
-    useNewUrlParser: true, // Add this line to use the new URL parser
-    useCreateIndex: true,
-    useFindAndModify: false,
-    useUnifiedTopology: true,
-  })
-  .then(() => console.log("DB connection successful!"));
+mongoose.connect(DB, {
+  useNewUrlParser: true, // Add this line to use the new URL parser
+  useCreateIndex: true,
+  useFindAndModify: false,
+  useUnifiedTopology: true,
+});
+
 // READING THE JASON FILE
 
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, "utf-8"));
@@ -33,7 +32,6 @@ const importData = async () => {
     await Tour.create(tours);
     await User.create(users, { validateBeforeSave: false });
     await Review.create(reviews);
-    console.log("Data successfully loaded!");
   } catch (err) {
     console.log(err);
   }
@@ -46,7 +44,6 @@ const deleteData = async () => {
     await Tour.deleteMany();
     await User.deleteMany();
     await Review.deleteMany();
-    console.log("Data successfully deleted!");
   } catch (err) {
     console.log(err);
   }
@@ -57,4 +54,3 @@ if (process.argv[2] === "--import") {
 } else if (process.argv[2] === "--delete") {
   deleteData();
 }
-console.log(process.argv);
