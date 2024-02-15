@@ -32,13 +32,8 @@ if (process.env.NODE_ENV === "development") {
 // });
 // app.use("/api", limiter);
 // CORS configuration
-var allowlist = [
-  "http://localhost:3000",
-  "https://effervescent-melba-bd12be.netlify.app",
-  "https://65c7d043cf29b69cebea0f6b--effervescent-melba-bd12be.netlify.app",
-];
 const corsOptions = {
-  origin: allowlist,
+  origin: "http://localhost:3000",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 };
@@ -74,7 +69,7 @@ app.use(express.static(`${__dirname}/public`));
 // Test middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
-
+  // console.log(req.headers);
   next();
 });
 

@@ -109,8 +109,6 @@ exports.getOneTour_slug = (Model, popOption) => async (req, res, next) => {
     // Use the corrected query
     let querry = Model.findOne(query);
 
-    console.log(querry, "qqqqqqqqqqqqqqq");
-
     if (popOption) querry.populate(popOption);
 
     const fetchalldata = await querry;

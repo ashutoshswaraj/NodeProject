@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const AppError = require("../utils/appError");
 const factory = require("./handleFactory");
+const Booking = require("../models/bookingModel");
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = "5";
   req.query.sort = "-ratingsAverage,price";
@@ -14,7 +15,21 @@ exports.getTourSlug = factory.getOneTour_slug(Tour, {
   path: "review",
   fields: "review rating user",
 });
+exports.getMyTours = async (req, res, next) => {
+  // 1) Find all bookings
+  try {
+    const bookings = await Booking.find({ user: req.user.id });
 
+    // 2) Find tours with the returned IDs
+    const tourIDs = bookings.map((el) => el.tour);
+    const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+    res.status(200).json({
+      status: "success",
+      tours,
+    });
+  } catch (err) {}
+};
 exports.createTour = factory.createOne(Tour);
 
 exports.updateTour = factory.updateOne(Tour);

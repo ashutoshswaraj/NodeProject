@@ -15,7 +15,7 @@ exports.getCheckoutSession = async (req, res, next) => {
     // 2) Create checkout session
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
-      success_url: `${req.protocol}://${req.get("host")}/`,
+      success_url: "http://localhost:3000/tour/the-sea-explorer",
       //   success_url: `${req.protocol}://${req.get("host")}/my-tours/?tour=${
       //     req.params.tourId
       //   }&user=${req.user.id}&price=${tour.price}`,
@@ -36,7 +36,7 @@ exports.getCheckoutSession = async (req, res, next) => {
         // },
         {
           price_data: {
-            currency: "usd",
+            currency: "INR",
             product_data: {
               name: `${tour.name} Tour`,
             },
@@ -49,6 +49,8 @@ exports.getCheckoutSession = async (req, res, next) => {
     });
 
     // 3) Create session as response
+    console.log(session, "sssesssionnn");
+    createBookingCheckout(session);
     res.status(200).json({
       status: "success",
       session,
@@ -57,28 +59,32 @@ exports.getCheckoutSession = async (req, res, next) => {
 };
 
 const createBookingCheckout = async (session) => {
+  console.log(session, "createeboookingggg");
   const tour = session.client_reference_id;
   const user = (await User.findOne({ email: session.customer_email })).id;
-  const price = session.display_items[0].amount / 100;
+  const price = session.amount_total;
   await Booking.create({ tour, user, price });
 };
 
 exports.webhookCheckout = (req, res, next) => {
   const signature = req.headers["stripe-signature"];
-
+  console.log("inside funtionnnnnnnnnnnnnnnnnnnnnnn");
   let event;
   try {
     event = stripe.webhooks.constructEvent(
       req.body,
       signature,
-      process.env.STRIPE_WEBHOOK_SECRET
+      process.env.STRIPE_SECRET_KEY
     );
+    console.log("inside try");
   } catch (err) {
+    console.log("CATCHHHHHHHHHHHHHHH");
     return res.status(400).send(`Webhook error: ${err.message}`);
   }
 
   if (event.type === "checkout.session.completed")
-    createBookingCheckout(event.data.object);
+    console.log("yesssssssssssssssssss");
+  createBookingCheckout(event.data.object);
 
   res.status(200).json({ received: true });
 };
