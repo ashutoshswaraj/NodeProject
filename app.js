@@ -32,8 +32,13 @@ if (process.env.NODE_ENV === "development") {
 // });
 // app.use("/api", limiter);
 // CORS configuration
+var allowlist = [
+  "http://localhost:3000",
+  "https://65ceafdada48d8530e5c73fb--thunderous-melba-ffdfb9.netlify.app/",
+  "https://65ceafdada48d8530e5c73fb--thunderous-melba-ffdfb9.netlify.app/",
+];
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: allowlist,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 };
