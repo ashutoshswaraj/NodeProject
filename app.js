@@ -34,8 +34,8 @@ if (process.env.NODE_ENV === "development") {
 // CORS configuration
 var allowlist = [
   "http://localhost:3000",
-  "https://65ceafdada48d8530e5c73fb--thunderous-melba-ffdfb9.netlify.app/",
-  "https://65ceafdada48d8530e5c73fb--thunderous-melba-ffdfb9.netlify.app/",
+  "https://65ceafdada48d8530e5c73fb--thunderous-melba-ffdfb9.netlify.app",
+  "https://65ceafdada48d8530e5c73fb--thunderous-melba-ffdfb9.netlify.app",
 ];
 const corsOptions = {
   origin: allowlist,
