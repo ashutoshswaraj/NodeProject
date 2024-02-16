@@ -36,7 +36,6 @@ exports.updateOne = (Model) => async (req, res, next) => {
 };
 
 exports.createOne = (Model) => async (req, res) => {
-  // console.log(req.body);
   try {
     const doc = await Model.create(req.body);
     res.status(201).json({
@@ -75,31 +74,6 @@ exports.getOne = (Model, popOption) => async (req, res, next) => {
     });
   } catch (err) {}
 };
-// exports.getOneTour_slug = (Model, popOption) => async (req, res, next) => {
-//   try {
-//     let querry = Model.findOne(req.params.slug);
-//     console.log(querry, "qqqqqqqqqqqqqqq");
-//     if (popOption) querry.populate(popOption);
-//     // const fetAlltour = await Tour.findById(req.params.id)
-
-//     // we use populate on the field we want to add referece data from user module
-//     // const fetAlltour = await Tour.findById(req.params.id).populate("guides")
-
-//     // now if we dont want some fields from user in our guide
-//     const fetchalldata = await querry;
-
-//     if (!fetchalldata) {
-//       return next(new AppError("No doc found"));
-//     }
-//     res.status(200).json({
-//       status: "success",
-//       data: {
-//         data: fetchalldata,
-//       },
-
-//     });
-//   } catch (err) {}
-// };
 
 exports.getOneTour_slug = (Model, popOption) => async (req, res, next) => {
   try {
@@ -108,8 +82,6 @@ exports.getOneTour_slug = (Model, popOption) => async (req, res, next) => {
 
     // Use the corrected query
     let querry = Model.findOne(query);
-
-    console.log(querry, "qqqqqqqqqqqqqqq");
 
     if (popOption) querry.populate(popOption);
 

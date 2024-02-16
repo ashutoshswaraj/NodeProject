@@ -49,21 +49,6 @@ const upload = multer({
 
 exports.uploadUserPhoto = upload.single("photo");
 
-// exports.resizeUserPhoto = async (req, res, next) => {
-//   try {
-//     if (!req.file) return next();
-
-//     req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-
-//     await sharp(req.file.buffer)
-//       .resize(500, 500)
-//       .toFormat("jpeg")
-//       .jpeg({ quality: 90 })
-//       .toBuffer();
-//     console.log(req.file, "eeeeeeeeeee");
-//     next();
-//   } catch (err) {}
-// };
 exports.resizeUserPhoto = async (req, res, next) => {
   try {
     if (!req.file) return next();
@@ -109,8 +94,6 @@ exports.getMe = (req, res, next) => {
   next();
 };
 exports.updateMe = async (req, res, next) => {
-  console.log(req.body, "oooooooooooooooooooo");
-  // console.log(req.body, req.photo, "----------------");
   try {
     // 1) Create error if user POSTs password data
     if (req.body.password || req.body.passwordConfirm) {

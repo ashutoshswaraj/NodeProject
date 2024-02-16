@@ -1,6 +1,7 @@
 const Tour = require("../models/tourModel");
 const AppError = require("../utils/appError");
 const factory = require("./handleFactory");
+const Booking = require("../models/bookingModel");
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = "5";
   req.query.sort = "-ratingsAverage,price";
@@ -14,30 +15,27 @@ exports.getTourSlug = factory.getOneTour_slug(Tour, {
   path: "review",
   fields: "review rating user",
 });
+exports.getMyTours = async (req, res, next) => {
+  // 1) Find all bookings
+  try {
+    const bookings = await Booking.find({ user: req.user.id });
 
+    // 2) Find tours with the returned IDs
+    const tourIDs = bookings.map((el) => el.tour);
+    const tours = await Tour.find({ _id: { $in: tourIDs } });
+
+    res.status(200).json({
+      status: "success",
+      tours,
+    });
+  } catch (err) {}
+};
 exports.createTour = factory.createOne(Tour);
 
 exports.updateTour = factory.updateOne(Tour);
 
 exports.deleteTour = factory.deleteOne(Tour);
 
-// exports.deleteTour = async (req, res) => {
-//   try {
-//     const deletetour = await Tour.findByIdAndDelete(req.params.id);
-//     res.status(200).json({
-//       status: "success",
-//       data: {
-//         tour: deletetour,
-//       },
-//     });
-//   } catch (err) {
-//     console.log(err);
-//   }
-//   res.status(204).json({
-//     status: "success",
-//     data: null,
-//   });
-// };
 exports.getTourStats = async (req, res, next) => {
   try {
     const stats = await Tour.aggregate([
@@ -58,9 +56,6 @@ exports.getTourStats = async (req, res, next) => {
       {
         $sort: { avgPrice: 1 },
       },
-      // {
-      //   $match: { _id: { $ne: 'EASY' } }
-      // }
     ]);
 
     res.status(200).json({
@@ -120,8 +115,6 @@ exports.getMonthlyPlan = async (req, res, next) => {
   } catch (err) {}
 };
 
-// /tours-within/:distance/center/:latlng/unit/:unit
-// /tours-within/233/center/34.111745,-118.113491/unit/mi
 exports.getToursWithin = async (req, res, next) => {
   try {
     const { distance, latlng, unit } = req.params;
