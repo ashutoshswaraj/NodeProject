@@ -36,6 +36,23 @@ exports.updateTour = factory.updateOne(Tour);
 
 exports.deleteTour = factory.deleteOne(Tour);
 
+// exports.deleteTour = async (req, res) => {
+//   try {
+//     const deletetour = await Tour.findByIdAndDelete(req.params.id);
+//     res.status(200).json({
+//       status: "success",
+//       data: {
+//         tour: deletetour,
+//       },
+//     });
+//   } catch (err) {
+//     console.log(err);
+//   }
+//   res.status(204).json({
+//     status: "success",
+//     data: null,
+//   });
+// };
 exports.getTourStats = async (req, res, next) => {
   try {
     const stats = await Tour.aggregate([
@@ -56,6 +73,9 @@ exports.getTourStats = async (req, res, next) => {
       {
         $sort: { avgPrice: 1 },
       },
+      // {
+      //   $match: { _id: { $ne: 'EASY' } }
+      // }
     ]);
 
     res.status(200).json({
@@ -115,6 +135,8 @@ exports.getMonthlyPlan = async (req, res, next) => {
   } catch (err) {}
 };
 
+// /tours-within/:distance/center/:latlng/unit/:unit
+// /tours-within/233/center/34.111745,-118.113491/unit/mi
 exports.getToursWithin = async (req, res, next) => {
   try {
     const { distance, latlng, unit } = req.params;

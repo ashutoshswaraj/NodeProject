@@ -42,10 +42,13 @@ router
     tourController.createTour
   );
 
-router.route("/:slug").get(authController.protect, tourController.getTourSlug);
 router
-  .route("/:id")
-  .get(tourController.getTour)
+  .route("/slug/:slug")
+  .get(authController.protect, tourController.getTourSlug);
+
+router
+  .route("/single_tour/:id")
+  .get(authController.protect, tourController.getTour)
   .patch(
     authController.protect,
     authController.restrictTo("admin", "lead-guide"),

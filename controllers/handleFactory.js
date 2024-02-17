@@ -36,6 +36,7 @@ exports.updateOne = (Model) => async (req, res, next) => {
 };
 
 exports.createOne = (Model) => async (req, res) => {
+  // console.log(req.body);
   try {
     const doc = await Model.create(req.body);
     res.status(201).json({
@@ -55,6 +56,27 @@ exports.createOne = (Model) => async (req, res) => {
 exports.getOne = (Model, popOption) => async (req, res, next) => {
   try {
     let querry = Model.findById(req.params.id);
+
+    if (popOption) querry.populate(popOption);
+
+    const fetchalldata = await querry;
+
+    if (!fetchalldata) {
+      return next(new AppError("No doc found"));
+    }
+    res.status(200).json({
+      status: "success",
+
+      data: [fetchalldata],
+    });
+  } catch (err) {
+    console.log(err, "errr");
+    next(err);
+  }
+};
+exports.getOneReview = (Model, popOption) => async (req, res, next) => {
+  try {
+    let querry = Model.find({ user: req.params.id });
     if (popOption) querry.populate(popOption);
     // const fetAlltour = await Tour.findById(req.params.id)
 

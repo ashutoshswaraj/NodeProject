@@ -60,7 +60,10 @@ exports.signup = async (req, res, next) => {
       role: req.body.role,
     });
     const url = `${req.protocol}://${req.get("host")}/me`;
-
+    // console.log(url);
+    // const resetURL = `${req.protocol}://${req.get(
+    //   "host"
+    // )}/api/v1/users/resetPassword/${resetToken}`;
     const message = url;
 
     await sendEmail({
@@ -97,7 +100,7 @@ exports.login = async (req, res, next) => {
 };
 exports.refreshToken = async (req, res, next) => {
   const authHeader = req.headers.authorization;
-
+  console.log(req.headers);
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     return next(new AppError("Invalid authorization header", 401));
   }
@@ -107,9 +110,10 @@ exports.refreshToken = async (req, res, next) => {
   try {
     // Verify the refresh token
     const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
-
+    console.log(decoded, "decodee");
     // Check if the user still exists
     const user = await User.findById(decoded.id);
+    console.log(user, "oooooooooooooooo");
 
     if (!user) {
       return next(new AppError("User no longer exists", 401));
@@ -133,11 +137,13 @@ exports.refreshToken = async (req, res, next) => {
           message: "Token has expired. Please log in again.",
         });
       } else if (err.name === "JsonWebTokenError") {
+        console.log("hellloooo error");
         return res.status(401).json({
           status: "fail",
           message: "invalid signature. Please log in again.",
         });
       }
+      console.log(err.name, "namee");
     }
   }
 };
@@ -169,14 +175,14 @@ exports.forgetPassword = async (req, res, next) => {
       subject: "Your password reset token (valid for 10 min)",
       message,
     });
-
+    console.log(useremail.email, resetToken, "===============");
     res.status(200).json({
       status: "success",
       message: "Token sent to email!",
     });
   } catch (err) {
     // Access useremail in the catch block
-
+    console.log(err, "errrrr");
     if (useremail) {
       useremail.passwordResetToken = undefined;
       useremail.passwordResetExpires = undefined;
@@ -193,7 +199,7 @@ exports.forgetPassword = async (req, res, next) => {
 exports.resetPassword = async (req, res, next) => {
   try {
     // 1) Get user based on the token
-
+    console.log(req.params.token);
     const hashedToken = crypto
       .createHash("sha256")
       .update(req.params.token)
@@ -203,7 +209,7 @@ exports.resetPassword = async (req, res, next) => {
       passwordResetToken: hashedToken,
       passwordResetExpires: { $gt: Date.now() },
     });
-
+    console.log(user, "userrrrr");
     // 2) If token has not expired, and there is user, set the new password
     if (!user) {
       return next(new AppError("Token is invalid or has expired", 400));
@@ -224,7 +230,7 @@ exports.resetPassword = async (req, res, next) => {
 exports.updatePassword = async (req, res, next) => {
   try {
     // 1) Get user from collection
-
+    console.log(req, "reqqqqqqqqq");
     const user = await User.findById(req.user.id).select("+password");
 
     // 2) Check if POSTed current password is correct
@@ -289,11 +295,13 @@ exports.protect = async (req, res, next) => {
     next();
   } catch (err) {
     if (err.name === "TokenExpiredError") {
+      console.log("TokenExpiredError:", err.message);
       return res.status(401).json({
         status: "fail",
         message: "Token has expired. Please log in again.",
       });
     } else {
+      console.log("JWT Verification Error:", err.message);
       return res.status(401).json({
         status: "fail",
         message: "Invalid token. Please log in again.",
