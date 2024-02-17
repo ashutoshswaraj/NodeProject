@@ -49,7 +49,7 @@ exports.getCheckoutSession = async (req, res, next) => {
     });
 
     // 3) Create session as response
-
+    console.log(session, "sssesssionnn");
     createBookingCheckout(session);
     res.status(200).json({
       status: "success",
@@ -80,7 +80,8 @@ exports.webhookCheckout = (req, res, next) => {
   }
 
   if (event.type === "checkout.session.completed")
-    createBookingCheckout(event.data.object);
+    console.log("yesssssssssssssssssss");
+  createBookingCheckout(event.data.object);
 
   res.status(200).json({ received: true });
 };

@@ -32,8 +32,13 @@ if (process.env.NODE_ENV === "development") {
 // });
 // app.use("/api", limiter);
 // CORS configuration
+var allowlist = [
+  "http://localhost:3000",
+  "https://master--monumental-peony-df37d8.netlify.app",
+  "https://master--monumental-peony-df37d8.netlify.app",
+];
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: allowlist,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 };
